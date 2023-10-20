@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 
 
 def get_avatar_path(instance, filename):
@@ -8,6 +8,23 @@ def get_avatar_path(instance, filename):
 
 
 class CustomUser(AbstractUser):
+    ADMINISTRATOR = "Administrator"
+    MODERATOR = "Moderator"
+    BASIC = "Basic"
+
+    ROLE_CHOICES = (
+        (ADMINISTRATOR, "Administrateur"),
+        (MODERATOR, "Modérateur"),
+        (BASIC, "Utilisateur"),
+    )
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default=BASIC,
+        verbose_name="Rôle",
+    )
+
     avatar = models.ImageField(
         upload_to=get_avatar_path, verbose_name="Avatar", null=True, blank=True
     )
@@ -23,6 +40,19 @@ class CustomUser(AbstractUser):
         settings.AUTH_USER_MODEL,
         blank=True,
     )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.role == self.ADMINISTRATOR:
+            self.is_staff = True
+            group = Group.objects.get(name="administrators")
+            self.groups.add(group)  # equivalent to group.user_set.add(self)
+        elif self.role == self.MODERATOR:
+            group = Group.objects.get(name="moderators")
+            self.groups.add(group)
+        elif self.role == self.BASIC:
+            group = Group.objects.get(name="basic")
+            self.groups.add(group)
 
 
 class UserFollows(models.Model):
