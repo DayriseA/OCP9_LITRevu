@@ -53,6 +53,7 @@ urlpatterns = [
         name="password_change_done",
     ),
     path("feed/", rating.views.feed, name="feed"),
+    path("ticket/create/", rating.views.ticket_create, name="ticket_create"),
 ]
 
 # Do not use this in production.
