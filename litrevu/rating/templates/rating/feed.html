@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h1>Bienvenue {{ user.first_name }}</h1>
+    <h1>Bienvenue {{ user.username }}</h1>
     <hr>
     <h2>Votre flux:</h2>
 
@@ -9,8 +9,19 @@
         <div>
             <p>Par {{ ticket.author }} le {{ ticket.time_created }}</p>
             <p>{{ ticket.title }}<p>
-            <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
+            {% if ticket.image %}
+                <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
+            {% endif %}
             <p>{{ ticket.description }}</p>
+            <hr>
+        </div>
+    {% endfor %}
+
+    {% for review in reviews %}
+        <div>
+            <p>Par {{ review.author }} le {{ review.time_created }}</p>
+            <p>{{ review.headline }}<p>
+            <p>{{ review.rating }} / 5</p>
             <hr>
         </div>
     {% endfor %}
