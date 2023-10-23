@@ -1,13 +1,15 @@
 {% extends "base.html" %}
+{% load rating_extras %}
 {% block content %}
 
-    <h1>Bienvenue {{ user.username }}</h1>
+    <h1>Bienvenue {{ user.username|capfirst }}</h1>
     <hr>
     <h2>Votre flux:</h2>
 
     {% for ticket in tickets %}
         <div>
-            <p>Par {{ ticket.author }} le {{ ticket.time_created }}</p>
+            <p>{% filter capfirst %}{% author_display ticket.author %}{% endfilter %}</p>
+            <p>{{ ticket.time_created|post_time_display }}</p>
             <p>{{ ticket.title }}<p>
             {% if ticket.image %}
                 <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
@@ -19,7 +21,8 @@
 
     {% for review in reviews %}
         <div>
-            <p>Par {{ review.author }} le {{ review.time_created }}</p>
+            <p>{% filter capfirst %}{% author_display review.author %}{% endfilter %}</p>
+            <p>{{ review.time_created|post_time_display }}</p>
             <p>{{ review.headline }}<p>
             <p>{{ review.rating }} / 5</p>
             <hr>
