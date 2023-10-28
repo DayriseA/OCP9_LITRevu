@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from . import forms, models
 
@@ -26,21 +26,57 @@ def ticket_create(request):
 
 
 @login_required
-def review_create(request):
-    ticket_form = forms.TicketForm()
+def review_create(request, ticket_id=None):
+    """
+    Create a review for a ticket. If no ticket_id is provided, a ticket must be
+    created in the process.
+    """
+    # ticket as None for context when no ticket_id is provided
+    ticket = None
+    # ticket_form as None for context when ticket_id is provided
+    ticket_form = None
     review_form = forms.ReviewForm()
+
+    if ticket_id:
+        ticket = get_object_or_404(models.Ticket, id=ticket_id)
+
+    if not ticket_id:
+        ticket_form = forms.TicketForm()
+
     if request.method == "POST":
-        ticket_form = forms.TicketForm(request.POST, request.FILES)
         review_form = forms.ReviewForm(request.POST)
-        # use all() to assure errors are displayed for both forms
-        if all([ticket_form.is_valid(), review_form.is_valid()]):
-            ticket = ticket_form.save(commit=False)
-            ticket.author = request.user
-            ticket.save()
+        # if no ticket_id then we have a ticket_form to process
+        if not ticket_id:
+            ticket_form = forms.TicketForm(request.POST, request.FILES)
+            # we don't want to save ticket_form if review_form is invalid
+            if all([ticket_form.is_valid(), review_form.is_valid()]):
+                ticket = ticket_form.save(commit=False)
+                ticket.author = request.user
+                ticket.save()
+
+        if all([review_form.is_valid(), ticket]):
             review = review_form.save(commit=False)
             review.ticket = ticket
             review.author = request.user
             review.save()
             return redirect("feed")
-    context = {"ticket_form": ticket_form, "review_form": review_form}
+    context = {"ticket_form": ticket_form, "review_form": review_form, "ticket": ticket}
     return render(request, "rating/review_create.html", context=context)
+
+
+@login_required
+def review_edit(request, review_id):
+    """Edit a review. Only the author of the review can edit it."""
+    review = get_object_or_404(models.Review, id=review_id)
+    # check if the user is the author of the review
+    if request.user == review.author:
+        form = forms.ReviewForm(instance=review)
+        ticket = review.ticket
+        if request.method == "POST":
+            form = forms.ReviewForm(request.POST, instance=review)
+            if form.is_valid():
+                form.save()
+                return redirect("feed")
+        context = {"form": form, "ticket": ticket}
+        return render(request, "rating/review_edit.html", context=context)
+    return redirect("feed")

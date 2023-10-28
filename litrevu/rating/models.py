@@ -22,6 +22,9 @@ class Ticket(models.Model):
             image.thumbnail(self.IMAGE_MAX_SIZE)
             image.save(self.image.path)
 
+    def has_been_reviewed(self):
+        return self.review_set.exists()
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.resize_image()

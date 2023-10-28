@@ -1,0 +1,15 @@
+{% load rating_extras %}
+
+<div>
+    <p>{% filter capfirst %}{% author_display ticket.author %}{% endfilter %}</p>
+    <p>{{ ticket.time_created|post_time_display }}</p>
+    <p>{{ ticket.title }}<p>
+    {% if ticket.image %}
+        <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
+    {% endif %}
+    <p>{{ ticket.description }}</p>
+    {% if not ticket.has_been_reviewed %}
+        <p><a href="{% url 'ticket_respond' ticket.id %}">Créer une critique</a></p>
+    {% endif %}
+    <hr>
+</div>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h2>Modifier une critique</h2>
+    <div>
+        <p>Vous êtes en train de modifier la critique répondant à</p>
+        {% include "rating/partials/ticket_snippet.html" %}
+    </div>
+    <hr>
+    <div>
+        <p>Critique</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Modifier</button>
+        </form>
+    </div>
+
+{% endblock content %}

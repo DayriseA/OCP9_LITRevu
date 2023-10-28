@@ -1,0 +1,12 @@
+{% load rating_extras %}
+
+<div>
+    <p>{% filter capfirst %}{% author_display review.author %}{% endfilter %}</p>
+    <p>{{ review.time_created|post_time_display }}</p>
+    <p>{{ review.headline }}<p>
+    <p>{{ review.rating }} / 5</p>
+    {% if review.author == user %}
+        <p><a href="{% url 'review_edit' review.id %}">Modifier la critique</a></p>
+    {% endif %}
+    <hr>
+</div>
