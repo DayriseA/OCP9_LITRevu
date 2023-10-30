@@ -53,6 +53,7 @@ urlpatterns = [
         name="password_change_done",
     ),
     path("feed/", rating.views.feed, name="feed"),
+    path("my_posts/", rating.views.my_posts, name="my_posts"),
     path("ticket/create/", rating.views.ticket_create, name="ticket_create"),
     path(
         "ticket/<int:ticket_id>/respond/",

@@ -1,15 +1,43 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from itertools import chain
+from django.core.paginator import Paginator
 
 from . import forms, models
 
 
 @login_required
 def feed(request):
+    """Display the feed of tickets and reviews."""
     tickets = models.Ticket.objects.all()
     reviews = models.Review.objects.all()
-    context = {"tickets": tickets, "reviews": reviews}
-    return render(request, "rating/feed.html", context=context)
+    # chain tickets and reviews together and sort them by time_created, newest first
+    feed = sorted(
+        chain(tickets, reviews),
+        key=lambda instance: instance.time_created,
+        reverse=True,
+    )
+    # paginate the feed
+    paginator = Paginator(feed, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(request, "rating/feed.html", {"page_obj": page_obj})
+
+
+@login_required
+def my_posts(request):
+    """Display the tickets and reviews posted by the user."""
+    tickets = models.Ticket.objects.filter(author=request.user)
+    reviews = models.Review.objects.filter(author=request.user)
+    feed = sorted(
+        chain(tickets, reviews),
+        key=lambda instance: instance.time_created,
+        reverse=True,
+    )
+    paginator = Paginator(feed, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(request, "rating/my_posts.html", {"page_obj": page_obj})
 
 
 @login_required

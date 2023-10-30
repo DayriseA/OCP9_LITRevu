@@ -29,3 +29,8 @@ def post_time_display(post_time):
         return f"il y a {int(seconds_ago // HOUR)}h."
     else:
         return f"{post_time.strftime('%H:%M, %d %B %Y')}"
+
+
+@register.filter
+def model_type(instance):
+    return type(instance).__name__
