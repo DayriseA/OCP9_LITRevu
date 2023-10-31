@@ -7,6 +7,10 @@
     <p>{{ review.rating }} / 5</p>
     {% if review.author == user %}
         <p><a href="{% url 'review_edit' review.id %}">Modifier la critique</a></p>
+        <form action="{% url 'review_delete' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer cette critique ?');">Supprimer</button>
+        </form>
     {% endif %}
     <hr>
 </div>

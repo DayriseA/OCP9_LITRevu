@@ -7,11 +7,13 @@
     <h2>Vos posts:</h2>
 
     {% for post in page_obj %}
+
         {% if post|model_type == "Ticket" %}
             {% include "rating/partials/ticket_snippet.html" with ticket=post %}
         {% elif post|model_type == "Review" %}
             {% include "rating/partials/review_snippet.html" with review=post %}
         {% endif %}
+        
     {% endfor %}
 
     {% include "rating/partials/page_navigation.html" %}

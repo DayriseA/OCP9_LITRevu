@@ -55,13 +55,24 @@ urlpatterns = [
     path("feed/", rating.views.feed, name="feed"),
     path("my_posts/", rating.views.my_posts, name="my_posts"),
     path("ticket/create/", rating.views.ticket_create, name="ticket_create"),
+    path("ticket/<int:ticket_id>/edit/", rating.views.ticket_edit, name="ticket_edit"),
     path(
         "ticket/<int:ticket_id>/respond/",
         rating.views.review_create,
         name="ticket_respond",
     ),
+    path(
+        "ticket/<int:ticket_id>/delete/",
+        rating.views.ticket_delete,
+        name="ticket_delete",
+    ),
     path("review/create/", rating.views.review_create, name="review_create"),
     path("review/<int:review_id>/edit/", rating.views.review_edit, name="review_edit"),
+    path(
+        "review/<int:review_id>/delete/",
+        rating.views.review_delete,
+        name="review_delete",
+    ),
 ]
 
 # Do not use this in production.

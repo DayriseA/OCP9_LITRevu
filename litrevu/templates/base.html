@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="{% static 'app.css' %}">
     </head>
     <body>
-        <h1>LITReview</h1>
+        <h1><a href="{% url 'feed' %}">LITReview</a></h1>
         <nav class="navbar">
             <a href="{% url 'ticket_create' %}">Demander une critique</a>
             <a href="{% url 'review_create' %}">Créer une critique (de zéro)</a>
@@ -13,6 +13,13 @@
             <a href="{% url 'logout' %}">Se déconnecter</a>
         </nav>
         <hr>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% block content %}{% endblock content %}
     </body>
 </html>

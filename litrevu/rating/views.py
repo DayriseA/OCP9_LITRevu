@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from itertools import chain
 from django.core.paginator import Paginator
 
@@ -93,6 +94,25 @@ def review_create(request, ticket_id=None):
 
 
 @login_required
+def ticket_edit(request, ticket_id):
+    """Edit a ticket. Only the author of the ticket can edit it."""
+    ticket = get_object_or_404(models.Ticket, id=ticket_id)
+    # check if the user is the author of the ticket
+    if request.user == ticket.author:
+        form = forms.TicketForm(instance=ticket)
+        if request.method == "POST":
+            form = forms.TicketForm(request.POST, request.FILES, instance=ticket)
+            if form.is_valid():
+                form.save()
+                return redirect("my_posts")
+        context = {"form": form, "ticket": ticket}
+        return render(request, "rating/ticket_edit.html", context=context)
+    elif request.user != ticket.author:
+        messages.error(request, "Vous n'avez pas le droit de modifier ce ticket.")
+        return redirect("feed")
+
+
+@login_required
 def review_edit(request, review_id):
     """Edit a review. Only the author of the review can edit it."""
     review = get_object_or_404(models.Review, id=review_id)
@@ -104,7 +124,37 @@ def review_edit(request, review_id):
             form = forms.ReviewForm(request.POST, instance=review)
             if form.is_valid():
                 form.save()
-                return redirect("feed")
+                return redirect("my_posts")
         context = {"form": form, "ticket": ticket}
         return render(request, "rating/review_edit.html", context=context)
-    return redirect("feed")
+    elif request.user != review.author:
+        messages.error(request, "Vous n'avez pas le droit de modifier cette critique.")
+        return redirect("feed")
+
+
+@login_required
+def ticket_delete(request, ticket_id):
+    """Delete a ticket. Only the author of the ticket can delete it."""
+    ticket = get_object_or_404(models.Ticket, id=ticket_id)
+    if request.user == ticket.author:
+        ticket.delete()
+        messages.success(request, "Ticket supprimé avec succès.")
+    # if the user is not the author of the ticket, send an error message
+    elif request.user != ticket.author:
+        messages.error(request, "Vous n'avez pas la permission de supprimer ce ticket.")
+    return redirect("my_posts")
+
+
+@login_required
+def review_delete(request, review_id):
+    """Delete a review. Only the author of the review can delete it."""
+    review = get_object_or_404(models.Review, id=review_id)
+    if request.user == review.author:
+        review.delete()
+        messages.success(request, "Critique supprimée avec succès.")
+    # if the user is not the author of the review, send an error message
+    elif request.user != review.author:
+        messages.error(
+            request, "Vous n'avez pas la permission de supprimer cette critique."
+        )
+    return redirect("my_posts")
