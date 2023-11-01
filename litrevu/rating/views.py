@@ -1,10 +1,13 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from itertools import chain
 from django.core.paginator import Paginator
 
 from . import forms, models
+
+User = get_user_model()
 
 
 @login_required
@@ -158,3 +161,48 @@ def review_delete(request, review_id):
             request, "Vous n'avez pas la permission de supprimer cette critique."
         )
     return redirect("my_posts")
+
+
+@login_required
+def follows(request):
+    """
+    Allow the user to follow an other using an input with its username.
+    Displays a list of followed users. Also displays a list of followers.
+    """
+    user = request.user
+    following = user.follows.all()  # users followed by the user
+    followers = user.followers.all()  # users following the user
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        try:
+            user_to_follow = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, "Cet utilisateur n'existe pas.")
+            return redirect("follows")
+        # check if the user is not trying to follow himself
+        if user_to_follow == user:
+            messages.error(request, "Vous ne pouvez pas vous suivre vous-même.")
+            return redirect("follows")
+        # check if the user is not already following the user_to_follow
+        if user_to_follow in user.follows.all():
+            messages.error(request, "Vous suivez déjà cet utilisateur.")
+            return redirect("follows")
+        # add the user_to_follow to the user's following
+        user.follows.add(user_to_follow)
+        messages.success(request, f"Vous suivez maintenant {user_to_follow.username}.")
+        return redirect("follows")
+
+    context = {"following": following, "followers": followers}
+    return render(request, "rating/follows.html", context=context)
+
+
+@login_required
+def unfollow(request, user_id):
+    """Unfollow a user from the follows page."""
+    user_to_unfollow = get_object_or_404(User, id=user_id)
+    user = request.user
+    if user_to_unfollow in user.follows.all():
+        user.follows.remove(user_to_unfollow)
+        messages.success(request, f"Vous ne suivez plus {user_to_unfollow.username}.")
+    return redirect("follows")

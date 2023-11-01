@@ -73,6 +73,8 @@ urlpatterns = [
         rating.views.review_delete,
         name="review_delete",
     ),
+    path("follows/", rating.views.follows, name="follows"),
+    path("unfollow/<int:user_id>/", rating.views.unfollow, name="unfollow"),
 ]
 
 # Do not use this in production.
