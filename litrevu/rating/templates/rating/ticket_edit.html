@@ -6,6 +6,9 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
+            {% if form.instance.image %}
+                <img src="{{ form.instance.image.url }}" alt="form.instance.title">
+            {% endif %}
             <button type="submit">Envoyer</button>
         </form>
     </div>

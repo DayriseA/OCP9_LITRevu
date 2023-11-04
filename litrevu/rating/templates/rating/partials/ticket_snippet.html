@@ -1,22 +1,8 @@
 {% load rating_extras %}
 
-<div>
-    <p>{% filter capfirst %}{% author_display ticket.author %}{% endfilter %}</p>
     <p>{{ ticket.time_created|post_time_display }}</p>
     <p>{{ ticket.title }}<p>
+    <p>{{ ticket.description }}</p>
     {% if ticket.image %}
         <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
     {% endif %}
-    <p>{{ ticket.description }}</p>
-    {% if not ticket.has_been_reviewed %}
-        <p><a href="{% url 'ticket_respond' ticket.id %}">Créer une critique</a></p>
-    {% endif %}
-    {% if ticket.author == user %}
-        <p><a href="{% url 'ticket_edit' ticket.id %}">Modifier le ticket</a></p>
-        <form action="{% url 'ticket_delete' ticket.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer ce ticket ?');">Supprimer</button>
-        </form>
-    {% endif %}
-    <hr>
-</div>

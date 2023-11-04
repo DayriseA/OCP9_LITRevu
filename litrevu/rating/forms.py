@@ -4,15 +4,17 @@ from . import models
 
 
 class TicketForm(forms.ModelForm):
-    title = forms.CharField()
-    title.widget.attrs["class"] = "size-auto"
-
     class Meta:
         model = models.Ticket
         fields = ("title", "description", "image")
 
 
 class ReviewForm(forms.ModelForm):
+    # user chose a rating using a radio button
+    rating = forms.ChoiceField(
+        choices=[(i, str(i)) for i in range(6)], widget=forms.RadioSelect, label="Note"
+    )
+
     class Meta:
         model = models.Review
         fields = ("headline", "rating", "body")

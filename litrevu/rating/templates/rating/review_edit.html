@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{% load rating_extras %}
 {% block content %}
 
     <h2>Modifier une critique</h2>
     <div>
-        <p>Vous êtes en train de modifier la critique répondant à</p>
+        <p>Vous êtes en train de poster en réponse à</p>
+        Critique demandée par {% author_display ticket.author %}
         {% include "rating/partials/ticket_snippet.html" %}
     </div>
     <hr>

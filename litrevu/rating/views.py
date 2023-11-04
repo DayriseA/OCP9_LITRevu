@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q, F
 from django.contrib import messages
 from itertools import chain
 from django.core.paginator import Paginator
@@ -12,12 +13,38 @@ User = get_user_model()
 
 @login_required
 def feed(request):
-    """Display the feed of tickets and reviews."""
-    tickets = models.Ticket.objects.all()
-    reviews = models.Review.objects.all()
-    # chain tickets and reviews together and sort them by time_created, newest first
+    """
+    Display a feed of tickets and reviews. Composed of posts from followed users,
+    from the user, and reviews responding to the user's tickets.
+    """
+    user = request.user
+    # tickets (not reviewed by same author) and reviews from followed users
+    users_followed = user.follows.all()
+    tickets_followed = models.Ticket.objects.filter(author__in=users_followed).exclude(
+        Q(review__author=F("author"))
+    )
+    reviews_followed = models.Review.objects.filter(author__in=users_followed)
+
+    # tickets (not already reviewed by the user) and reviews from the user
+    user_tickets = models.Ticket.objects.filter(author=user).exclude(
+        Q(review__author=user)
+    )
+    user_reviews = models.Review.objects.filter(author=user)
+
+    # reviews responding to the user's tickets but not written by the user
+    responding_reviews = models.Review.objects.filter(ticket__author=user).exclude(
+        author=user
+    )
+
+    # combine all into a single feed
     feed = sorted(
-        chain(tickets, reviews),
+        chain(
+            tickets_followed,
+            reviews_followed,
+            user_tickets,
+            user_reviews,
+            responding_reviews,
+        ),
         key=lambda instance: instance.time_created,
         reverse=True,
     )
