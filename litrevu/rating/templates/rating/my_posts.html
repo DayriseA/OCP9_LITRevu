@@ -2,46 +2,46 @@
 {% load rating_extras %}
 {% block content %}
 
-    <h2>Vos posts</h2>
-    <hr>
+  <h2>Vos posts</h2>
+  <hr>
 
-    {% for post in page_obj %}
+  {% for post in page_obj %}
 
-        {% if post|model_type == "Ticket" %}
-            <div>
-                <p>Vous avez publié un ticket</p>
-                {% include "rating/partials/ticket_snippet.html" with ticket=post %}
-                <p><a href="{% url 'ticket_edit' post.id %}"><button>Modifier</button></a></p>
-                <form action="{% url 'ticket_delete' post.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer ce ticket ?');">Supprimer</button>
-                </form>
-            </div>
-            <hr>
-        {% elif post|model_type == "Review" %}
-            <div>
-                <p>Vous avez publié une critique</p>
-                {% include "rating/partials/review_snippet.html" with review=post %}
-                {% if post.ticket %}
-                    <div>
-                        <p>Ticket - {% author_display post.author %}</p>
-                        <p>{{ post.ticket.title }}</p>
-                        {% if post.ticket.image %}
-                            <img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
-                        {% endif %}
-                    </div>
-                {% endif %}
-                <p><a href="{% url 'review_edit' post.id %}"><button>Modifier</button></a></p>
-                <form action="{% url 'review_delete' post.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer cette critique ?');">Supprimer</button>
-                </form>
-            </div>
-            <hr>
+    {% if post|model_type == "Ticket" %}
+      <div>
+        <p>Vous avez publié un ticket</p>
+        {% include "rating/partials/ticket_snippet.html" with ticket=post %}
+        <p><a href="{% url 'ticket_edit' post.id %}"><button>Modifier</button></a></p>
+        <form action="{% url 'ticket_delete' post.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer ce ticket ?');">Supprimer</button>
+        </form>
+      </div>
+      <hr>
+    {% elif post|model_type == "Review" %}
+      <div>
+        <p>Vous avez publié une critique</p>
+        {% include "rating/partials/review_snippet.html" with review=post %}
+        {% if post.ticket %}
+          <div>
+            <p>Ticket - {% author_display post.author %}</p>
+            <p>{{ post.ticket.title }}</p>
+            {% if post.ticket.image %}
+              <img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
+            {% endif %}
+          </div>
         {% endif %}
-        
-    {% endfor %}
+        <p><a href="{% url 'review_edit' post.id %}"><button>Modifier</button></a></p>
+        <form action="{% url 'review_delete' post.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer cette critique ?');">Supprimer</button>
+        </form>
+      </div>
+      <hr>
+    {% endif %}
 
-    {% include "rating/partials/page_navigation.html" %}
-    
+  {% endfor %}
+
+  {% include "rating/partials/page_navigation.html" %}
+
 {% endblock %}

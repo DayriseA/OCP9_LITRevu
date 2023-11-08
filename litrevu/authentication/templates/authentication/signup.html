@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h4>Inscrivez-vous</h4>
+  <h4>Inscrivez-vous</h4>
 
-{% if form.errors %}
+  {% if form.errors %}
     {{ form.errors }}
-{% endif %}
-<form method="post">
+  {% endif %}
+  <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <a href="{% url 'login' %}">Retourner</a>
     <input type="submit" value="S'inscrire">
-</form>
+  </form>
 
 {% endblock content %}

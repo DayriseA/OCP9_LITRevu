@@ -2,36 +2,36 @@
 {% load rating_extras %}
 {% block content %}
 
-    <h2>Créer une critique</h2>
-    {% if ticket %}
-        <div>
-            <p>Vous êtes en train de poster en réponse à</p>
-            Critique demandée par {% author_display ticket.author %}
-            {% include "rating/partials/ticket_snippet.html" %}
-        </div>
-        <hr>
-        <div>
-            <p>Critique</p>
-            <form method="post">
-                {% csrf_token %}
-                {{ review_form.as_p }}
-                <button type="submit">Envoyer</button>
-            </form>
-        </div>
-    {% else %}
-        <form enctype="multipart/form-data" method="post">
-            {% csrf_token %}
-            <div>
-                <p>Livre / Article</p>
-                {{ ticket_form.as_p }}
-            </div>
-            <hr>
-            <div>
-                <p>Critique</p>
-                {{ review_form.as_p }}
-            </div>
-            <button type="submit">Envoyer</button>
-        </form>
-    {% endif %}
+  <h2>Créer une critique</h2>
+  {% if ticket %}
+    <div>
+      <p>Vous êtes en train de poster en réponse à</p>
+      Critique demandée par {% author_display ticket.author %}
+      {% include "rating/partials/ticket_snippet.html" %}
+    </div>
+    <hr>
+    <div>
+      <p>Critique</p>
+      <form method="post">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  {% else %}
+    <form enctype="multipart/form-data" method="post">
+      {% csrf_token %}
+      <div>
+        <p>Livre / Article</p>
+        {{ ticket_form.as_p }}
+      </div>
+      <hr>
+      <div>
+        <p>Critique</p>
+        {{ review_form.as_p }}
+      </div>
+      <button type="submit">Envoyer</button>
+    </form>
+  {% endif %}
 
 {% endblock content %}

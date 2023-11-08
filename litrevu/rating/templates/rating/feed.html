@@ -2,41 +2,41 @@
 {% load rating_extras %}
 {% block content %}
 
-    <h1>Bienvenue {{ user.username|capfirst }}</h1>
+  <h1>Bienvenue {{ user.username|capfirst }}</h1>
 
-    <a href="{% url 'ticket_create' %}"><button>Demander une critique</button></a>
-    <a href="{% url 'review_create' %}"><button>Créer une critique (de zéro)</button></a>
-    
-    <hr>
+  <a href="{% url 'ticket_create' %}"><button>Demander une critique</button></a>
+  <a href="{% url 'review_create' %}"><button>Créer une critique (de zéro)</button></a>
 
-    {% for post in page_obj %}
-        {% if post|model_type == "Ticket" %}
-            <div>
-                <p>Critique demandée par {% author_display post.author %}</p>
-                {% include "rating/partials/ticket_snippet.html" with ticket=post %}
-            </div>
-            {% if not post.has_been_reviewed %}
-                <a href="{% url 'ticket_respond' post.id %}"><button>Créer une critique</button></a>
+  <hr>
+
+  {% for post in page_obj %}
+    {% if post|model_type == "Ticket" %}
+      <div>
+        <p>Critique demandée par {% author_display post.author %}</p>
+        {% include "rating/partials/ticket_snippet.html" with ticket=post %}
+      </div>
+      {% if not post.has_been_reviewed %}
+        <a href="{% url 'ticket_respond' post.id %}"><button>Créer une critique</button></a>
+      {% endif %}
+      <hr>
+    {% elif post|model_type == "Review" %}
+      <div>
+        <p>Critique publiée par {% author_display post.author %}</p>
+        {% include "rating/partials/review_snippet.html" with review=post %}
+        {% if post.ticket %}
+          <div>
+            <p>Ticket - {% author_display post.ticket.author %}</p>
+            <p>{{ post.ticket.title }}</p>
+            {% if post.ticket.image %}
+              <img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
             {% endif %}
-            <hr>
-        {% elif post|model_type == "Review" %}
-            <div>
-                <p>Critique publiée par {% author_display post.author %}</p>
-                {% include "rating/partials/review_snippet.html" with review=post %}
-                {% if post.ticket %}
-                    <div>
-                        <p>Ticket - {% author_display post.ticket.author %}</p>
-                        <p>{{ post.ticket.title }}</p>
-                        {% if post.ticket.image %}
-                            <img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
-                        {% endif %}
-                    </div>
-                {% endif %}
-            </div>
-            <hr>
+          </div>
         {% endif %}
-    {% endfor %}
+      </div>
+      <hr>
+    {% endif %}
+  {% endfor %}
 
-    {% include "rating/partials/page_navigation.html" %}
-    
+  {% include "rating/partials/page_navigation.html" %}
+
 {% endblock %}

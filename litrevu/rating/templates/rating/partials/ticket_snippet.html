@@ -1,8 +1,8 @@
 {% load rating_extras %}
 
-    <p>{{ ticket.time_created|post_time_display }}</p>
-    <p>{{ ticket.title }}<p>
-    <p>{{ ticket.description }}</p>
-    {% if ticket.image %}
-        <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
-    {% endif %}
+<p>{{ ticket.time_created|post_time_display }}</p>
+<p>{{ ticket.title }}<p>
+  <p>{{ ticket.description }}</p>
+  {% if ticket.image %}
+    <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
+  {% endif %}
