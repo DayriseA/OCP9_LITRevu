@@ -27,6 +27,7 @@ from django.urls import path
 
 import authentication.views
 import rating.views
+from authentication.forms import MyAuthForm
 
 
 urlpatterns = [
@@ -35,7 +36,9 @@ urlpatterns = [
     path(
         "login/",
         LoginView.as_view(
-            template_name="authentication/login.html", redirect_authenticated_user=True
+            template_name="authentication/login.html",
+            authentication_form=MyAuthForm,
+            redirect_authenticated_user=True,
         ),
         name="login",
     ),
