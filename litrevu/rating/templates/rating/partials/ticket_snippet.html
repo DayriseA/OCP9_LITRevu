@@ -1,8 +1,20 @@
 {% load rating_extras %}
 
-<p>{{ ticket.time_created|post_time_display }}</p>
-<p>{{ ticket.title }}<p>
-  <p>{{ ticket.description }}</p>
+<div class="col-sm-4 text-end">
+  <p class="fw-light small">{{ ticket.time_created|post_time_display }}</p>
+</div>
+
+<div class="col-12 text-center">
+  <p class="lead">{{ ticket.title }}<p>
+</div>
+
+<div class="row my-3">
   {% if ticket.image %}
-    <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
+    <div class="col-sm-auto order-2 order-sm-1">
+      <img src="{{ ticket.image.url }}" class="img-fluid img-thumbnail img-cover" alt="{{ ticket.title }}">
+    </div>
   {% endif %}
+  <div class="col-sm order-1 order-sm-2 pt-3">
+    <p>{{ ticket.description }}</p>
+  </div>
+</div>

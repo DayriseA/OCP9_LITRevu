@@ -1,5 +1,15 @@
 {% load rating_extras %}
+{% load static %}
 
-<p>{{ review.time_created|post_time_display }}</p>
-<p>{{ review.headline }}  {{ review.rating }} / 5<p>
+<div class="col-sm-4 text-end">
+  <p class="fw-light small">{{ review.time_created|post_time_display }}</p>
+</div>
+
+<div class="col-12 text-center">
+  <p class="lead">{{ review.headline }}<p>
+  <p>{{ review.rating }} / 5<p>
+</div>
+
+<div class="col-12">
   <p>{{ review.body }}</p>
+</div>

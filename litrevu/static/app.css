@@ -1,0 +1,16 @@
+.fade-out {
+    animation: fadeOut 1s forwards;
+}
+
+.img-cover {
+    max-height: 450px;
+}
+
+.img-mini-cover {
+    max-height: 300px;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; visibility: hidden; }
+}
