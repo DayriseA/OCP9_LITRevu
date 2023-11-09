@@ -2,18 +2,33 @@
 {% block content %}
 
   <div class="container text-center mt-4">
-    <div class="row align-items-center justify-content-center g-5">
+    <div class="row align-items-center justify-content-center g-3">
 
-      <div class="col-sm mb-4">
+      <div class="col-sm mb-3">
         <h5>Inscrivez-vous maintenant</h5>
         <a class="btn btn-secondary" href="{% url 'signup' %}">S'inscrire</a>
       </div>
 
       <div class="col-sm">
         <h5>Connectez-vous</h5>
+        {% if form.non_field_errors %}
+          <button class="btn btn-danger mb-3 d-block d-sm-none" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#errorMessages" aria-expanded="false" aria-controls="errorMessages">
+            Show Errors
+          </button>
+          <div class="alert alert-danger collapse d-sm-block" id="errorMessages" role="alert">
+            {% for error in form.non_field_errors %}
+              {{ error }}
+            {% endfor %}
+          </div>
+        {% endif %}
         <form method="post">
           {% csrf_token %}
-          {{ form.as_p }}
+          {% for field in form %}
+            <div class="mb-3">
+              {{ field }}
+            </div>
+          {% endfor %}
           <button type="submit" class="btn btn-secondary float-end">Se connecter</button>
         </form>
       </div>
