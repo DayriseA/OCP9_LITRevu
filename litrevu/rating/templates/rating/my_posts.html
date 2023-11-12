@@ -2,45 +2,73 @@
 {% load rating_extras %}
 {% block content %}
 
-  <h2>Vos posts</h2>
-  <hr>
+  <h4 class="text-center">Vos posts</h4>
 
-  {% for post in page_obj %}
+  <div class="container-sm">
+    {% for post in page_obj %}
 
-    {% if post|model_type == "Ticket" %}
-      <div>
-        <p>Vous avez publié un ticket</p>
-        {% include "rating/partials/ticket_snippet.html" with ticket=post %}
-        <p><a href="{% url 'ticket_edit' post.id %}"><button>Modifier</button></a></p>
-        <form action="{% url 'ticket_delete' post.id %}" method="post">
-          {% csrf_token %}
-          <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer ce ticket ?');">Supprimer</button>
-        </form>
-      </div>
-      <hr>
-    {% elif post|model_type == "Review" %}
-      <div>
-        <p>Vous avez publié une critique</p>
-        {% include "rating/partials/review_snippet.html" with review=post %}
-        {% if post.ticket %}
-          <div>
-            <p>Ticket - {% author_display post.author %}</p>
-            <p>{{ post.ticket.title }}</p>
-            {% if post.ticket.image %}
-              <img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
-            {% endif %}
+      {% if post|model_type == "Ticket" %}
+        <div class="row border border-dark p-3">
+          <div class="col-sm-8 text-start">
+            <p>Vous avez publié un ticket</p>
           </div>
-        {% endif %}
-        <p><a href="{% url 'review_edit' post.id %}"><button>Modifier</button></a></p>
-        <form action="{% url 'review_delete' post.id %}" method="post">
-          {% csrf_token %}
-          <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer cette critique ?');">Supprimer</button>
-        </form>
-      </div>
-      <hr>
-    {% endif %}
+          {% include "rating/partials/ticket_snippet.html" with ticket=post %}
+          <div class="row justify-content-end">
+            <div class="col-sm-auto">
+              <a href="{% url 'ticket_edit' post.id %}" class="btn btn-secondary">Modifier</a>
+            </div>
+            <div class="col-sm-auto">
+              <form action="{% url 'ticket_delete' post.id %}" method="post">
+                {% csrf_token %}
+                <button onclick="return confirm('Etes vous sûr de vouloir supprimer ce ticket ?');"
+                        type="submit" class="btn btn-secondary">Supprimer</button>
+              </form>
+            </div>
+          </div>
+        </div>
 
-  {% endfor %}
+      {% elif post|model_type == "Review" %}
+        <div class="row border border-dark p-3">
+          <div class="col-sm-8 text-start">
+            <p>Vous avez publié une critique</p>
+          </div>
+          {% include "rating/partials/review_snippet.html" with review=post %}
+
+          {% if post.ticket %}
+            <div class="row border border-dark w-75 mx-auto my-3">
+              <div class="col-sm-8 text-start mt-2">
+                <p class="small mb-1">Ticket - {% author_display post.author %}</p>
+              </div>
+              <div class="col-sm-4 text-end mt-2">
+                <p class="fw-light small">{{ post.ticket.time_created|post_time_display }}</p>
+              </div>
+              <div class="col-12">
+                <p class="lead fs-6">{{ post.ticket.title }}</p>
+              </div>
+              {% if post.ticket.image %}
+                <div class="col pb-3">
+                  <img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"
+                       class="img-fluid img-thumbnail img-mini-cover">
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+          <div class="row justify-content-end">
+            <div class="col-sm-auto mb-1">
+              <a href="{% url 'review_edit' post.id %}" class="btn btn-secondary">Modifier</a>
+            </div>
+            <div class="col-sm-auto">
+              <form action="{% url 'review_delete' post.id %}" method="post">
+                {% csrf_token %}
+                <button onclick="return confirm('Etes vous sûr de vouloir supprimer cette critique ?');"
+                        type="submit" class="btn btn-secondary">Supprimer</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
 
   {% include "rating/partials/page_navigation.html" %}
 

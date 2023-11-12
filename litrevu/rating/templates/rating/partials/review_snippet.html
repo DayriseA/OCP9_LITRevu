@@ -5,9 +5,8 @@
   <p class="fw-light small">{{ review.time_created|post_time_display }}</p>
 </div>
 
-<div class="col-12 text-center">
-  <p class="lead">{{ review.headline }}<p>
-  <p>{{ review.rating }} / 5<p>
+<div class="col-12 text-start">
+  <p class="lead">{{ review.headline }} <span class="ms-3">{{ review.rating }} / 5</span><p>
 </div>
 
 <div class="col-12">
