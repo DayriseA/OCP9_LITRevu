@@ -16,6 +16,15 @@ def add_classes(bound_field, new_classes):
     return bound_field
 
 
+@register.filter()
+def label_with_classes(field, classes):
+    """
+    Apply this filter to a field.
+    Return the label with the given CSS classes, not the field itself.
+    """
+    return field.label_tag(attrs={"class": classes})
+
+
 @register.filter(name="classes")
 def replace_classes(field, classes):
     field.widget.attrs["class"] = classes
