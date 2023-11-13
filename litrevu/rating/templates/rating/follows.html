@@ -1,47 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <h3>Suivre d'autres utilisateurs</h3>
-  <form method="post">
-    {% csrf_token %}
-    <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
-    <button type="submit">Suivre</button>
-  </form>
+  <div class="container-sm w-50 mt-4">
+    
+    <div class="row">
+      <div class="col-12 mb-3">
+        <h6 class="text-center">Suivre d'autres utilisateurs</h6>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row mb-3">
+          <div class="col-sm mx-auto mb-2">
+            <input type="text" id="username" name="username" placeholder="Nom d'utilisateur"
+                   required class="form-control text-center">
+          </div>
+          <div class="col-sm-auto">
+            <button type="submit" class="btn btn-secondary float-end">Suivre</button>
+          </div>
+        </div>
+      </form>
+    </div>
 
-  {% if following %}
-    <table>
-      <thead>
-        <tr>
-          <th>Abonnements</th>
-        </tr>
-      </thead>
-      <tbody>
+    {% if following %}
+      <hr>
+      <div class="row mb-4">
+        <div class="col-12 mb-3">
+          <h6 class="text-center">Abonnements</h6>
+        </div>
         {% for user in following %}
-          <tr>
-            <td>{{ user }}</td>
-            <td><a href="{% url 'unfollow' user.id %}">Désabonner</a></td>
-          </tr>
+          <div class="row border border-dark align-items-center pe-0 mb-1">
+            <div class="col-sm px-0">
+              {{ user }}
+            </div>
+            <div class="col-sm pe-0">
+              <a href="{% url 'unfollow' user.id %}" class="btn btn-sm btn-secondary rounded-0 float-end">
+                Désabonner
+              </a>
+            </div>
+          </div>
         {% endfor %}
-      </tbody>
-    </table>
-    <br>
-  {% endif %}
+      </div>
+    {% endif %}
 
-  {% if followers %}
-    <table>
-      <thead>
-        <tr>
-          <th>Abonnés</th>
-        </tr>
-      </thead>
-      <tbody>
+    {% if followers %}
+      <div class="row">
+        <div class="col-12 mb-3">
+          <h6 class="text-center">Abonnés</h6>
+        </div>
         {% for user in followers %}
-          <tr>
-            <td>{{ user }}</td>
-          </tr>
+          <div class="row border border-dark align-items-center mb-1">
+            {{ user }}
+          </div>
         {% endfor %}
-      </tbody>
-    </table>
-  {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
 
 {% endblock content %}
