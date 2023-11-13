@@ -1,11 +1,29 @@
 {% extends "base.html" %}
+{% load shared_templatetags %}
 {% block content %}
 
-  <h2>Créer un ticket</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Envoyer" />
-  </form>
+  <h4 class="text-center">Créer un ticket</h4>
+
+  <div class="container-sm">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3">
+          {{ field|label_with_classes:"form-label" }}
+          {% if field.errors %}
+            {{ field|add_classes:"form-control is-invalid" }}
+            {% for error in field.errors %}
+              <div class="invalid-feedback">
+                {{ error }}
+              </div>
+            {% endfor %}
+          {% else %}
+            {{ field|add_classes:"form-control" }}
+          {% endif %}
+        </div>
+      {% endfor %}
+      <input type="submit" value="Envoyer" class="btn btn-secondary float-end"/>
+    </form>
+  </div>
 
 {% endblock content %}

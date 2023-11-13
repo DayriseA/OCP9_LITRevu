@@ -1,15 +1,62 @@
 {% extends "base.html" %}
+{% load shared_templatetags %}
 {% block content %}
 
-  <h2>Modifier votre ticket</h2>
-  <div>
+  <h4 class="text-center">Créer un ticket</h4>
+
+  <div class="container-sm">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {{ form.as_p }}
-      {% if form.instance.image %}
-        <img src="{{ form.instance.image.url }}" alt="form.instance.title">
-      {% endif %}
-      <button type="submit">Envoyer</button>
+
+      <div class="mb-3">
+        {{ form.title|label_with_classes:"form-label" }}
+        {% if form.title.errors %}
+          {{ form.title|add_classes:"form-control is-invalid" }}
+          {% for error in form.title.errors %}
+            <div class="invalid-feedback">
+              {{ error }}
+            </div>
+          {% endfor %}
+        {% else %}
+          {{ form.title|add_classes:"form-control" }}
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.description|label_with_classes:"form-label" }}
+        {% if form.description.errors %}
+          {{ form.description|add_classes:"form-control is-invalid" }}
+          {% for error in form.description.errors %}
+            <div class="invalid-feedback">
+              {{ error }}
+            </div>
+          {% endfor %}
+        {% else %}
+          {{ form.description|add_classes:"form-control" }}
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.image|label_with_classes:"form-label" }}
+        {% if form.instance.image %}
+          <div class="mb-1">
+            <img src="{{ form.instance.image.url }}" alt="form.instance.title">
+          </div>
+        {% endif %}
+        {% if form.image.errors %}
+          <input type="file" name="{{ form.image.name }}" id="{{ form.image.auto_id }}"
+                 accept="image/*" class="form-control is-invalid">
+          {% for error in form.image.errors %}
+            <div class="invalid-feedback">
+              {{ error }}
+            </div>
+          {% endfor %}
+        {% else %}
+          <input type="file" name="{{ form.image.name }}" id="{{ form.image.auto_id }}"
+                 accept="image/*" class="form-control">
+        {% endif %}
+      </div>
+      <button type="submit" class="btn btn-secondary float-end">Envoyer</button>
     </form>
   </div>
 
