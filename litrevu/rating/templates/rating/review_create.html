@@ -1,37 +1,100 @@
 {% extends "base.html" %}
 {% load rating_extras %}
+{% load shared_templatetags %}
 {% block content %}
 
-  <h2>Créer une critique</h2>
-  {% if ticket %}
-    <div>
-      <p>Vous êtes en train de poster en réponse à</p>
-      Critique demandée par {% author_display ticket.author %}
-      {% include "rating/partials/ticket_snippet.html" %}
-    </div>
-    <hr>
-    <div>
-      <p>Critique</p>
-      <form method="post">
-        {% csrf_token %}
-        {{ review_form.as_p }}
-        <button type="submit">Envoyer</button>
-      </form>
-    </div>
-  {% else %}
+  <h4 class="text-center">Créer une critique</h4>
+
+  <div class="container-sm my-3">
     <form enctype="multipart/form-data" method="post">
       {% csrf_token %}
-      <div>
-        <p>Livre / Article</p>
-        {{ ticket_form.as_p }}
+      {% if ticket %}
+        <div class="row border border-dark pb-2">
+          <p class="fw-semibold small fst-italic">Vous êtes en train de poster en réponse à</p>
+          <div class="row border border-dark w-75 mx-auto mb-3 small">
+            <div class="col-sm-8 text-start">
+              Critique demandée par {% author_display ticket.author %}
+            </div>
+            {% include "rating/partials/ticket_snippet.html" %}
+          </div>
+        </div>
+      {% else %}
+        <div class="row border border-dark">
+          <p class="fw-semibold small fst-italic">Livre / Article</p>
+          {% for field in ticket_form %}
+            <div class="mb-3">
+              {{ field|label_with_classes:"form-label" }}
+              {% if field.errors %}
+                {{ field|add_classes:"form-control is-invalid" }}
+                {% for error in field.errors %}
+                  <div class="invalid-feedback">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% else %}
+                {{ field|add_classes:"form-control" }}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div class="row border border-top-0 border-dark">
+        <p class="fw-semibold small fst-italic">Critique</p>
+
+        <div class="mb-3">
+          {{ review_form.headline|label_with_classes:"form-label" }}
+          {% if review_form.headline.errors %}
+            {{ review_form.headline|add_classes:"form-control is-invalid" }}
+            {% for error in review_form.headline.errors %}
+              <div class="invalid-feedback">
+                {{ error }}
+              </div>
+            {% endfor %}
+          {% else %}
+            {{ review_form.headline|add_classes:"form-control" }}
+          {% endif %}
+        </div>
+
+        {{ review_form.rating|label_with_classes:"form-check-label" }}
+        <div class="mb-3">
+
+          {% for choice in review_form.rating.field.choices %}
+            <div class="form-check form-check-inline">
+              <input class="form-check-input{% if review_form.rating.errors %} is-invalid{% endif %}"
+                     type="radio" name="{{ review_form.rating.html_name }}" value="{{ choice.0 }}"
+                     id="{{ review_form.rating.auto_id }}_{{ forloop.counter }}">
+              <label class="form-check-label"
+                     for="{{ review_form.rating.auto_id }}_{{ forloop.counter }}">{{ choice.1 }}
+              </label>
+              {% if review_form.rating.errors %}
+                {% for error in review_form.rating.errors %}
+                  <div class="invalid-feedback">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ review_form.body|label_with_classes:"form-label" }}
+          {% if review_form.body.errors %}
+            {{ review_form.body|add_classes:"form-control is-invalid" }}
+            {% for error in review_form.body.errors %}
+              <div class="invalid-feedback">
+                {{ error }}
+              </div>
+            {% endfor %}
+          {% else %}
+            {{ review_form.body|add_classes:"form-control" }}
+          {% endif %}
+        </div>
+        <div class="col mb-3">
+          <button type="submit" class="btn btn-secondary float-end">Envoyer</button>
+        </div>
       </div>
-      <hr>
-      <div>
-        <p>Critique</p>
-        {{ review_form.as_p }}
-      </div>
-      <button type="submit">Envoyer</button>
     </form>
-  {% endif %}
+  </div>
 
 {% endblock content %}
