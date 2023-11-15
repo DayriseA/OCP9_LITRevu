@@ -18,8 +18,8 @@ def feed(request):
     from the user, and reviews responding to the user's tickets.
     """
     user = request.user
-    # tickets (not reviewed by same author) and reviews from followed users
     users_followed = user.follows.all()
+    # tickets (not reviewed by same author) and reviews from followed users
     tickets_followed = models.Ticket.objects.filter(author__in=users_followed).exclude(
         Q(review__author=F("author"))
     )
@@ -49,7 +49,7 @@ def feed(request):
         reverse=True,
     )
     # paginate the feed
-    paginator = Paginator(feed, 5)
+    paginator = Paginator(feed, 4)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(request, "rating/feed.html", {"page_obj": page_obj})
@@ -65,7 +65,7 @@ def my_posts(request):
         key=lambda instance: instance.time_created,
         reverse=True,
     )
-    paginator = Paginator(feed, 5)
+    paginator = Paginator(feed, 4)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(request, "rating/my_posts.html", {"page_obj": page_obj})
@@ -194,11 +194,12 @@ def review_delete(request, review_id):
 def follows(request):
     """
     Allow the user to follow an other using an input with its username.
-    Displays a list of followed users. Also displays a list of followers.
+    Displays a list of followed users, followers and blocked users.
     """
     user = request.user
     following = user.follows.all()  # users followed by the user
     followers = user.followers.all()  # users following the user
+    blocked_users = user.blocks.all()  # users blocked by the user
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -215,12 +216,16 @@ def follows(request):
         if user_to_follow in user.follows.all():
             messages.error(request, "Vous suivez déjà cet utilisateur.")
             return redirect("follows")
+        # check if the user_to_follow has not blocked the user
+        if user in user_to_follow.blocks.all():
+            messages.error(request, "Vous avez été bloqué par cet utilisateur.")
+            return redirect("follows")
         # add the user_to_follow to the user's following
         user.follows.add(user_to_follow)
         messages.success(request, f"Vous suivez maintenant {user_to_follow.username}.")
         return redirect("follows")
 
-    context = {"following": following, "followers": followers}
+    context = {"following": following, "followers": followers, "blocked": blocked_users}
     return render(request, "rating/follows.html", context=context)
 
 
@@ -232,4 +237,40 @@ def unfollow(request, user_id):
     if user_to_unfollow in user.follows.all():
         user.follows.remove(user_to_unfollow)
         messages.success(request, f"Vous ne suivez plus {user_to_unfollow.username}.")
+    return redirect("follows")
+
+
+@login_required
+def block_user(request, user_id):
+    """Block a follower. Use to prevent a user from following you"""
+    user_to_block = get_object_or_404(User, id=user_id)
+    user = request.user
+    # no sense in blocking yourself
+    if user_to_block == request.user:
+        messages.error(request, "Vous ne pouvez pas vous bloquer vous-même.")
+        return redirect("follows")
+    # check if the user is already blocked
+    if user_to_block in request.user.blocks.all():
+        messages.error(request, "Vous avez déjà bloqué cet utilisateur.")
+        return redirect("follows")
+    # blocks the follower
+    user.blocks.add(user_to_block)
+    user_to_block.follows.remove(user)  # removed from the blocked user's following
+    # if followed, unfollow the blocked user
+    if user_to_block in user.follows.all():
+        user.follows.remove(user_to_block)
+    messages.success(request, f"Vous avez bloqué {user_to_block.username}.")
+    return redirect("follows")
+
+
+@login_required
+def unblock_user(request, user_id):
+    """Unblock a blocked user"""
+    user_to_unblock = get_object_or_404(User, id=user_id)
+    user = request.user
+    if user_to_unblock in user.blocks.all():
+        user.blocks.remove(user_to_unblock)
+        # add back the user to the blocked user's following
+        user_to_unblock.follows.add(user)
+        messages.success(request, f"Vous avez débloqué {user_to_unblock.username}.")
     return redirect("follows")

@@ -43,13 +43,40 @@
     {% endif %}
 
     {% if followers %}
-      <div class="row">
+      <div class="row mb-4">
         <div class="col-12 mb-3">
           <h6 class="text-center">Abonnés</h6>
         </div>
         {% for user in followers %}
-          <div class="row border border-dark align-items-center mb-1">
-            {{ user }}
+          <div class="row border border-dark align-items-center pe-0 mb-1">
+            <div class="col-sm px-0">
+              {{ user }}
+            </div>
+            <div class="col-sm pe-0">
+              <a href="{% url 'block' user.id %}" class="btn btn-sm btn-secondary rounded-0 float-end">
+                Bloquer
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if blocked %}
+      <div class="row mb-4">
+        <div class="col-12 mb-3">
+          <h6 class="text-center">Utilisateurs bloqués</h6>
+        </div>
+        {% for user in blocked %}
+          <div class="row border border-dark align-items-center pe-0 mb-1">
+            <div class="col-sm px-0">
+              {{ user }}
+            </div>
+            <div class="col-sm pe-0">
+              <a href="{% url 'unblock' user.id %}" class="btn btn-sm btn-secondary rounded-0 float-end">
+                Débloquer
+              </a>
+            </div>
           </div>
         {% endfor %}
       </div>

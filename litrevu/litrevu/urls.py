@@ -78,6 +78,8 @@ urlpatterns = [
     ),
     path("follows/", rating.views.follows, name="follows"),
     path("unfollow/<int:user_id>/", rating.views.unfollow, name="unfollow"),
+    path("block/<int:user_id>/", rating.views.block_user, name="block"),
+    path("unblock/<int:user_id>/", rating.views.unblock_user, name="unblock"),
 ]
 
 # Do not use this in production.
