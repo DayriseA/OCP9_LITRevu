@@ -1,4 +1,5 @@
 {% load rating_extras %}
+{% load bootstrap_icons %}
 {% load static %}
 
 <div class="col-sm-4 text-end">
@@ -6,7 +7,15 @@
 </div>
 
 <div class="col-12 text-start">
-  <p class="lead">{{ review.headline }} <span class="ms-3">{{ review.rating }} / 5</span><p>
+  <p class="lead">{{ review.headline }} <span class="mx-3"> - </span>
+    {% for i in "12345"|make_list %}
+      {% if i|add:0 <= review.rating %}
+        {% bs_icon "star-fill" %}
+      {% else %}
+        {% bs_icon "star" %}
+      {% endif %}
+    {% endfor %}
+  <p>
 </div>
 
 <div class="col-12">
