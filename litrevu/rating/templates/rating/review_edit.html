@@ -1,20 +1,80 @@
 {% extends "base.html" %}
 {% load rating_extras %}
+{% load shared_templatetags %}
 {% block content %}
 
-  <h2>Modifier une critique</h2>
-  <div>
-    <p>Vous êtes en train de poster en réponse à</p>
-    Critique demandée par {% author_display ticket.author %}
-    {% include "rating/partials/ticket_snippet.html" %}
-  </div>
-  <hr>
-  <div>
-    <p>Critique</p>
-    <form method="post">
+  <h4 class="text-center">Modifier votre critique</h4>
+
+  <div class="container-sm my-3">
+    <form enctype="multipart/form-data" method="post">
       {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Modifier</button>
+      <div class="row border border-dark pb-2">
+        <p class="fw-semibold small fst-italic">Vous êtes en train de poster en réponse à</p>
+        <div class="row border border-dark w-75 mx-auto mb-3 small">
+          <div class="col-sm-8 text-start">
+            Critique demandée par {% author_display ticket.author %}
+          </div>
+          {% include "rating/partials/ticket_snippet.html" %}
+        </div>
+      </div>
+
+      <div class="row border border-top-0 border-dark">
+        <p class="fw-semibold small fst-italic">Critique</p>
+
+        <div class="mb-3">
+          {{ form.headline|label_with_classes:"form-label" }}
+          {% if form.headline.errors %}
+            {{ form.headline|add_classes:"form-control is-invalid" }}
+            {% for error in form.headline.errors %}
+              <div class="invalid-feedback">
+                {{ error }}
+              </div>
+            {% endfor %}
+          {% else %}
+            {{ form.headline|add_classes:"form-control" }}
+          {% endif %}
+        </div>
+
+        {{ form.rating|label_with_classes:"form-check-label" }}
+        <div class="mb-3">
+
+          {% for choice in form.rating.field.choices %}
+            <div class="form-check form-check-inline">
+              <input class="form-check-input{% if form.rating.errors %} is-invalid{% endif %}"
+                     type="radio" name="{{ form.rating.html_name }}" value="{{ choice.0 }}"
+                     id="{{ form.rating.auto_id }}_{{ forloop.counter }}"
+                     {% if form.rating.value == choice.0 %}checked{% endif %}>
+              <label class="form-check-label"
+                     for="{{ form.rating.auto_id }}_{{ forloop.counter }}">{{ choice.1 }}
+              </label>
+              {% if form.rating.errors %}
+                {% for error in form.rating.errors %}
+                  <div class="invalid-feedback">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.body|label_with_classes:"form-label" }}
+          {% if form.body.errors %}
+            {{ form.body|add_classes:"form-control is-invalid" }}
+            {% for error in form.body.errors %}
+              <div class="invalid-feedback">
+                {{ error }}
+              </div>
+            {% endfor %}
+          {% else %}
+            {{ form.body|add_classes:"form-control" }}
+          {% endif %}
+        </div>
+        <div class="col mb-3">
+          <button type="submit" class="btn btn-secondary float-end">Modifier</button>
+        </div>
+      </div>
     </form>
   </div>
 
