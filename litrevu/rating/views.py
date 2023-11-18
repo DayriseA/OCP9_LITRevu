@@ -1,10 +1,10 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q, F
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from itertools import chain
 from django.core.paginator import Paginator
+from django.db.models import Q, F
+from django.shortcuts import render, redirect, get_object_or_404
+from itertools import chain
 
 from . import forms, models
 
@@ -16,6 +16,7 @@ def feed(request):
     """
     Display a feed of tickets and reviews. Composed of posts from followed users,
     from the user, and reviews responding to the user's tickets.
+    (Be warned that a new user will start with an empty feed)
     """
     user = request.user
     users_followed = user.follows.all()
@@ -73,10 +74,12 @@ def my_posts(request):
 
 @login_required
 def ticket_create(request):
+    """Create a ticket."""
     form = forms.TicketForm()
     if request.method == "POST":
         form = forms.TicketForm(request.POST, request.FILES)
         if form.is_valid():
+            # commit=False to prevent saving the form before adding the author
             ticket = form.save(commit=False)
             ticket.author = request.user
             ticket.save()
@@ -242,10 +245,10 @@ def unfollow(request, user_id):
 
 @login_required
 def block_user(request, user_id):
-    """Block a follower. Use to prevent a user from following you"""
+    """Block a follower. Use to prevent a user from seeing your posts."""
     user_to_block = get_object_or_404(User, id=user_id)
     user = request.user
-    # no sense in blocking yourself
+    # prevent blocking yourself
     if user_to_block == request.user:
         messages.error(request, "Vous ne pouvez pas vous bloquer vous-même.")
         return redirect("follows")
@@ -253,9 +256,10 @@ def block_user(request, user_id):
     if user_to_block in request.user.blocks.all():
         messages.error(request, "Vous avez déjà bloqué cet utilisateur.")
         return redirect("follows")
-    # blocks the follower
+    # add the follower to the blocks list
     user.blocks.add(user_to_block)
-    user_to_block.follows.remove(user)  # removed from the blocked user's following
+    # removed from the blocked user's following
+    user_to_block.follows.remove(user)
     # if followed, unfollow the blocked user
     if user_to_block in user.follows.all():
         user.follows.remove(user_to_block)

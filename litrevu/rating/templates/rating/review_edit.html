@@ -8,8 +8,10 @@
   <div class="container-sm my-3">
     <form enctype="multipart/form-data" method="post">
       {% csrf_token %}
-      <div class="row border border-dark pb-2">
-        <p class="fw-semibold small fst-italic">Vous êtes en train de poster en réponse à</p>
+      <div class="row border border-dark pb-2" role="region" aria-labelledby="responding-to">
+        <p class="fw-semibold small fst-italic" id="responding-to">
+          Vous êtes en train de poster en réponse à
+        </p>
         <div class="row border border-dark w-75 mx-auto mb-3 small">
           <div class="col-sm-8 text-start">
             Critique demandée par {% author_display ticket.author %}
@@ -18,15 +20,15 @@
         </div>
       </div>
 
-      <div class="row border border-top-0 border-dark">
-        <p class="fw-semibold small fst-italic">Critique</p>
+      <div class="row border border-top-0 border-dark" role"region" aria-labelledby="review-form">
+        <p class="fw-semibold small fst-italic" id="review-form">Critique</p>
 
-        <div class="mb-3">
+        <div class="mb-3" aria-label="Titre de la critique">
           {{ form.headline|label_with_classes:"form-label" }}
           {% if form.headline.errors %}
             {{ form.headline|add_classes:"form-control is-invalid" }}
             {% for error in form.headline.errors %}
-              <div class="invalid-feedback">
+              <div class="invalid-feedback" role="alert">
                 {{ error }}
               </div>
             {% endfor %}
@@ -36,8 +38,7 @@
         </div>
 
         {{ form.rating|label_with_classes:"form-check-label" }}
-        <div class="mb-3">
-
+        <div class="mb-3" role="radiogroup" aria-label="Note sur 5 ?">
           {% for choice in form.rating.field.choices %}
             <div class="form-check form-check-inline">
               <input class="form-check-input{% if form.rating.errors %} is-invalid{% endif %}"
@@ -49,7 +50,7 @@
               </label>
               {% if form.rating.errors %}
                 {% for error in form.rating.errors %}
-                  <div class="invalid-feedback">
+                  <div class="invalid-feedback" role="alert">
                     {{ error }}
                   </div>
                 {% endfor %}
@@ -58,12 +59,12 @@
           {% endfor %}
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" aria-label="Corps de la critique">
           {{ form.body|label_with_classes:"form-label" }}
           {% if form.body.errors %}
             {{ form.body|add_classes:"form-control is-invalid" }}
             {% for error in form.body.errors %}
-              <div class="invalid-feedback">
+              <div class="invalid-feedback" role="alert">
                 {{ error }}
               </div>
             {% endfor %}
@@ -72,7 +73,9 @@
           {% endif %}
         </div>
         <div class="col mb-3">
-          <button type="submit" class="btn btn-secondary float-end">Modifier</button>
+          <button type="submit" class="btn btn-secondary float-end" aria-label="Modifier la critique">
+            Modifier
+          </button>
         </div>
       </div>
     </form>

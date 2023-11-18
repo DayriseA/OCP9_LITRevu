@@ -1,21 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <div class="container-sm w-50 mt-4">
-    
+  <div class="container-sm w-50 mt-4" role="main">
+
     <div class="row">
       <div class="col-12 mb-3">
         <h6 class="text-center">Suivre d'autres utilisateurs</h6>
       </div>
-      <form method="post">
+      <form method="post" role="form" aria-label="Suivre d'autres utilisateurs">
         {% csrf_token %}
         <div class="row mb-3">
           <div class="col-sm mx-auto mb-2">
             <input type="text" id="username" name="username" placeholder="Nom d'utilisateur"
-                   required class="form-control text-center">
+                   required class="form-control text-center" aria-label="Nom d'utilisateur">
           </div>
           <div class="col-sm-auto">
-            <button type="submit" class="btn btn-secondary float-end">Suivre</button>
+            <button type="submit" class="btn btn-secondary float-end" aria-label="Suivre">
+              Suivre
+            </button>
           </div>
         </div>
       </form>
@@ -23,9 +25,9 @@
 
     {% if following %}
       <hr>
-      <div class="row mb-4">
+      <div class="row mb-4" role="region" aria-labelledby="suit">
         <div class="col-12 mb-3">
-          <h6 class="text-center">Abonnements</h6>
+          <h6 class="text-center" id="suit">Abonnements</h6>
         </div>
         {% for user in following %}
           <div class="row border border-dark align-items-center pe-0 mb-1">
@@ -33,7 +35,8 @@
               {{ user }}
             </div>
             <div class="col-sm pe-0">
-              <a href="{% url 'unfollow' user.id %}" class="btn btn-sm btn-secondary rounded-0 float-end">
+              <a href="{% url 'unfollow' user.id %}" aria-label="Ne plus suivre l'utilisateur"
+                 class="btn btn-sm btn-secondary rounded-0 float-end">
                 Désabonner
               </a>
             </div>
@@ -43,9 +46,9 @@
     {% endif %}
 
     {% if followers %}
-      <div class="row mb-4">
+      <div class="row mb-4" role="region" aria-labelledby="suivi-par">
         <div class="col-12 mb-3">
-          <h6 class="text-center">Abonnés</h6>
+          <h6 class="text-center" id="suivi-par">Abonnés</h6>
         </div>
         {% for user in followers %}
           <div class="row border border-dark align-items-center pe-0 mb-1">
@@ -53,7 +56,8 @@
               {{ user }}
             </div>
             <div class="col-sm pe-0">
-              <a href="{% url 'block' user.id %}" class="btn btn-sm btn-secondary rounded-0 float-end">
+              <a href="{% url 'block' user.id %}" aria-label="Bloquer l'utilisateur"
+                 class="btn btn-sm btn-secondary rounded-0 float-end">
                 Bloquer
               </a>
             </div>
@@ -63,9 +67,9 @@
     {% endif %}
 
     {% if blocked %}
-      <div class="row mb-4">
+      <div class="row mb-4" role="region" aria-labelledby="bloqués">
         <div class="col-12 mb-3">
-          <h6 class="text-center">Utilisateurs bloqués</h6>
+          <h6 class="text-center" id="bloqués">Utilisateurs bloqués</h6>
         </div>
         {% for user in blocked %}
           <div class="row border border-dark align-items-center pe-0 mb-1">
@@ -73,7 +77,8 @@
               {{ user }}
             </div>
             <div class="col-sm pe-0">
-              <a href="{% url 'unblock' user.id %}" class="btn btn-sm btn-secondary rounded-0 float-end">
+              <a href="{% url 'unblock' user.id %}" aria-label="Débloquer l'utilisateur"
+                 class="btn btn-sm btn-secondary rounded-0 float-end">
                 Débloquer
               </a>
             </div>

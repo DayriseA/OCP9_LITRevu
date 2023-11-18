@@ -4,16 +4,15 @@
 
   <h4 class="text-center">Modifier votre ticket</h4>
 
-  <div class="container-sm">
+  <div class="container-sm" role="main">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-
-      <div class="mb-3">
+      <div class="mb-3" aria-label="Titre du ticket">
         {{ form.title|label_with_classes:"form-label" }}
         {% if form.title.errors %}
           {{ form.title|add_classes:"form-control is-invalid" }}
           {% for error in form.title.errors %}
-            <div class="invalid-feedback">
+            <div class="invalid-feedback" role="alert">
               {{ error }}
             </div>
           {% endfor %}
@@ -22,12 +21,12 @@
         {% endif %}
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3" aria-label="Description du ticket">
         {{ form.description|label_with_classes:"form-label" }}
         {% if form.description.errors %}
           {{ form.description|add_classes:"form-control is-invalid" }}
           {% for error in form.description.errors %}
-            <div class="invalid-feedback">
+            <div class="invalid-feedback" role="alert">
               {{ error }}
             </div>
           {% endfor %}
@@ -36,18 +35,18 @@
         {% endif %}
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3" aria-label="Image de l'objet du ticket">
         {{ form.image|label_with_classes:"form-label" }}
         {% if form.instance.image %}
           <div class="mb-1">
-            <img src="{{ form.instance.image.url }}" alt="form.instance.title">
+            <img src="{{ form.instance.image.url }}" alt="{{ form.instance.title }}">
           </div>
         {% endif %}
         {% if form.image.errors %}
           <input type="file" name="{{ form.image.name }}" id="{{ form.image.auto_id }}"
                  accept="image/*" class="form-control is-invalid">
           {% for error in form.image.errors %}
-            <div class="invalid-feedback">
+            <div class="invalid-feedback" role="alert">
               {{ error }}
             </div>
           {% endfor %}
@@ -56,7 +55,9 @@
                  accept="image/*" class="form-control">
         {% endif %}
       </div>
-      <button type="submit" class="btn btn-secondary float-end">Envoyer</button>
+      <button type="submit" class="btn btn-secondary float-end" aria-label="Modifier le ticket">
+        Envoyer
+      </button>
     </form>
   </div>
 

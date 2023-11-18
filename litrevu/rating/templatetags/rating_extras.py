@@ -33,4 +33,5 @@ def post_time_display(post_time):
 
 @register.filter
 def model_type(instance):
+    """Returns the type name of the instance."""
     return type(instance).__name__

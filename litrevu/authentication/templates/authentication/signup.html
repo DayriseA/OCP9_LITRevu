@@ -12,7 +12,7 @@
             {% if field.errors %}
               {{ field|add_classes:"is-invalid" }}
               {% for error in field.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback" role="alert">
                   {{ error }}
                 </div>
               {% endfor %}
@@ -23,7 +23,9 @@
         {% endfor %}
         <div class="float-end">
           <a class="btn btn-secondary me-3" href="{% url 'login' %}">Retourner</a>
-          <button type="submit" class="btn btn-secondary">S'inscrire</button>
+          <button type="submit" class="btn btn-secondary" aria-label="S'inscrire">
+            S'inscrire
+          </button>
         </div>
       </form>
     </div>

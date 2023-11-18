@@ -4,11 +4,11 @@
 
   <h4 class="text-center">Vos posts</h4>
 
-  <div class="container-sm">
+  <div class="container-sm" role="main">
     {% for post in page_obj %}
 
       {% if post|model_type == "Ticket" %}
-        <div class="row border border-dark p-3">
+        <div class="row border border-dark p-3" role="article">
           <div class="col-sm-8 text-start">
             <p>Vous avez publié un ticket</p>
           </div>
@@ -28,7 +28,7 @@
         </div>
 
       {% elif post|model_type == "Review" %}
-        <div class="row border border-dark p-3">
+        <div class="row border border-dark p-3" role="article">
           <div class="col-sm-8 text-start">
             <p>Vous avez publié une critique</p>
           </div>

@@ -1,7 +1,7 @@
-<span>
+<nav role="navigation" aria-label="Pagination Navigation">
   {% if page_obj.has_previous %}
-    <a href="?page=1">« première</a>
-    <a href="?page={{ page_obj.previous_page_number }}">précédente</a>
+    <a href="?page=1" aria-label="Première page">« première</a>
+    <a href="?page={{ page_obj.previous_page_number }}" aria-label="Page précédente">précédente</a>
   {% endif %}
 
   <span>
@@ -9,7 +9,7 @@
   </span>
 
   {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">suivante</a>
-    <a href="?page={{ page_obj.paginator.num_pages }}">dernière »</a>
+    <a href="?page={{ page_obj.next_page_number }}" aria-label="Page suivante">suivante</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}" aria-label="Dernière page">dernière »</a>
   {% endif %}
-</span>
+</nav>

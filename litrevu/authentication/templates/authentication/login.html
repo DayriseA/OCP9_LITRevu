@@ -16,7 +16,8 @@
                   data-bs-target="#errorMessages" aria-expanded="false" aria-controls="errorMessages">
             Show Errors
           </button>
-          <div class="alert alert-danger collapse d-sm-block" id="errorMessages" role="alert">
+          <div class="alert alert-danger collapse d-sm-block" id="errorMessages"
+               role="alert" aria-live="assertive">
             {% for error in form.non_field_errors %}
               {{ error }}
             {% endfor %}

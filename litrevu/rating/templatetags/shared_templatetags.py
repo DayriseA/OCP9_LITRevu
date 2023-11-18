@@ -25,7 +25,9 @@ def label_with_classes(field, classes):
     return field.label_tag(attrs={"class": classes})
 
 
-@register.filter(name="classes")
-def replace_classes(field, classes):
-    field.widget.attrs["class"] = classes
-    return field
+# Not used for now
+# @register.filter(name="classes")
+# def replace_classes(field, classes):
+#     """Return the field with the given CSS classes instead of its own."""
+#     field.widget.attrs["class"] = classes
+#     return field

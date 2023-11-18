@@ -3,11 +3,14 @@
 {% load static %}
 
 <div class="col-sm-4 text-end">
-  <p class="fw-light small">{{ review.time_created|post_time_display }}</p>
+  <time datetime="{{ review.time_created }}" class="fw-light small">
+    {{ review.time_created|post_time_display }}
+  </time>
 </div>
 
 <div class="col-12 text-start">
   <p class="lead">{{ review.headline }} <span class="mx-3"> - </span>
+    <span class="visually-hidden">Note sur 5 représentée par le nombre d'étoiles pleines</span>
     {% for i in "12345"|make_list %}
       {% if i|add:0 <= review.rating %}
         {% bs_icon "star-fill" %}

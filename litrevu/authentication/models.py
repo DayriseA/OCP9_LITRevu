@@ -1,17 +1,17 @@
 from django.conf import settings
-from django.db import models
 from django.contrib.auth.models import AbstractUser, Group
+from django.db import models
 
 
 def get_avatar_path(instance, filename):
     return f"user_{instance.id}/avatars/{filename}"
 
 
+# role, groups and avatar not used yet at this point of the project
 class CustomUser(AbstractUser):
     ADMINISTRATOR = "Administrator"
     MODERATOR = "Moderator"
     BASIC = "Basic"
-
     ROLE_CHOICES = (
         (ADMINISTRATOR, "Administrateur"),
         (MODERATOR, "Modérateur"),

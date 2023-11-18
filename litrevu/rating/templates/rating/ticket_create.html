@@ -4,7 +4,7 @@
 
   <h4 class="text-center">Créer un ticket</h4>
 
-  <div class="container-sm">
+  <div class="container-sm" role="main">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in form %}
@@ -13,7 +13,7 @@
           {% if field.errors %}
             {{ field|add_classes:"form-control is-invalid" }}
             {% for error in field.errors %}
-              <div class="invalid-feedback">
+              <div class="invalid-feedback" role="alert">
                 {{ error }}
               </div>
             {% endfor %}
@@ -22,7 +22,8 @@
           {% endif %}
         </div>
       {% endfor %}
-      <input type="submit" value="Envoyer" class="btn btn-secondary float-end"/>
+      <input type="submit" value="Envoyer" class="btn btn-secondary float-end"
+             aria-label="Poster votre ticket"/>
     </form>
   </div>
 

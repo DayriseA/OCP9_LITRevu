@@ -1,7 +1,9 @@
 {% load rating_extras %}
 
 <div class="col-sm-4 text-end">
-  <p class="fw-light small">{{ ticket.time_created|post_time_display }}</p>
+  <time datetime="{{ ticket.time_created }}" class="fw-light small">
+    {{ ticket.time_created|post_time_display }}
+  </time>
 </div>
 
 <div class="col-12 text-start">

@@ -19,7 +19,7 @@
   </script>
 
 
-  <div class="container-sm">
+  <div class="container-sm" role="main">
 
     <div class="row text-center justify-content-center m-3 g-5">
       <div class="col-sm-auto">
@@ -32,7 +32,7 @@
 
     {% for post in page_obj %}
       {% if post|model_type == "Ticket" %}
-        <div class="row border border-dark p-3">
+        <div class="row border border-dark p-3" role="article">
           <div class="col-sm-8 text-start">
             <p>Critique demandée par {% author_display post.author %}</p>
           </div>
@@ -47,7 +47,7 @@
         </div>
 
       {% elif post|model_type == "Review" %}
-        <div class="row border border-dark p-3">
+        <div class="row border border-dark p-3" role="article">
           <div class="col-sm-8 text-start">
             <p>Critique publiée par {% author_display post.author %}</p>
           </div>
