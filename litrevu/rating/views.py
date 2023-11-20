@@ -129,67 +129,55 @@ def review_create(request, ticket_id=None):
 @login_required
 def ticket_edit(request, ticket_id):
     """Edit a ticket. Only the author of the ticket can edit it."""
-    ticket = get_object_or_404(models.Ticket, id=ticket_id)
-    # check if the user is the author of the ticket
-    if request.user == ticket.author:
-        form = forms.TicketForm(instance=ticket)
-        if request.method == "POST":
-            form = forms.TicketForm(request.POST, request.FILES, instance=ticket)
-            if form.is_valid():
-                form.save()
-                return redirect("my_posts")
-        context = {"form": form, "ticket": ticket}
-        return render(request, "rating/ticket_edit.html", context=context)
-    elif request.user != ticket.author:
-        messages.error(request, "Vous n'avez pas le droit de modifier ce ticket.")
-        return redirect("feed")
+    # 404 if the ticket does not exist or if the user is not the author
+    ticket = get_object_or_404(models.Ticket, id=ticket_id, author=request.user)
+    form = forms.TicketForm(instance=ticket)
+    if request.method == "POST":
+        form = forms.TicketForm(request.POST, request.FILES, instance=ticket)
+        if form.is_valid():
+            form.save()
+            return redirect("my_posts")
+    context = {"form": form, "ticket": ticket}
+    return render(request, "rating/ticket_edit.html", context=context)
 
 
 @login_required
 def review_edit(request, review_id):
     """Edit a review. Only the author of the review can edit it."""
-    review = get_object_or_404(models.Review, id=review_id)
-    # check if the user is the author of the review
-    if request.user == review.author:
-        form = forms.ReviewForm(instance=review)
-        ticket = review.ticket
-        if request.method == "POST":
-            form = forms.ReviewForm(request.POST, instance=review)
-            if form.is_valid():
-                form.save()
-                return redirect("my_posts")
-        context = {"form": form, "ticket": ticket}
-        return render(request, "rating/review_edit.html", context=context)
-    elif request.user != review.author:
-        messages.error(request, "Vous n'avez pas le droit de modifier cette critique.")
-        return redirect("feed")
+    # 404 if the review does not exist or if the user is not the author
+    review = get_object_or_404(models.Review, id=review_id, author=request.user)
+    form = forms.ReviewForm(instance=review)
+    ticket = review.ticket
+    if request.method == "POST":
+        form = forms.ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect("my_posts")
+    context = {"form": form, "ticket": ticket}
+    return render(request, "rating/review_edit.html", context=context)
 
 
 @login_required
-def ticket_delete(request, ticket_id):
+def ticket_delete(request):
     """Delete a ticket. Only the author of the ticket can delete it."""
-    ticket = get_object_or_404(models.Ticket, id=ticket_id)
-    if request.user == ticket.author:
+    if request.method == "POST":
+        ticket_id = request.POST.get("post_id")
+        # 404 if the ticket does not exist or if the user is not the author
+        ticket = get_object_or_404(models.Ticket, id=ticket_id, author=request.user)
         ticket.delete()
         messages.success(request, "Ticket supprimé avec succès.")
-    # if the user is not the author of the ticket, send an error message
-    elif request.user != ticket.author:
-        messages.error(request, "Vous n'avez pas la permission de supprimer ce ticket.")
     return redirect("my_posts")
 
 
 @login_required
-def review_delete(request, review_id):
+def review_delete(request):
     """Delete a review. Only the author of the review can delete it."""
-    review = get_object_or_404(models.Review, id=review_id)
-    if request.user == review.author:
+    if request.method == "POST":
+        review_id = request.POST.get("post_id")
+        # 404 if the review does not exist or if the user is not the author
+        review = get_object_or_404(models.Review, id=review_id, author=request.user)
         review.delete()
         messages.success(request, "Critique supprimée avec succès.")
-    # if the user is not the author of the review, send an error message
-    elif request.user != review.author:
-        messages.error(
-            request, "Vous n'avez pas la permission de supprimer cette critique."
-        )
     return redirect("my_posts")
 
 
