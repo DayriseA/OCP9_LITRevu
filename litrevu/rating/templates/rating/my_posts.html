@@ -18,9 +18,8 @@
               <a href="{% url 'ticket_edit' post.id %}" class="btn btn-secondary">Modifier</a>
             </div>
             <div class="col-sm-auto">
-              <form action="{% url 'ticket_delete' %}" method="post">
+              <form action="{% url 'ticket_delete' post.id %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="post_id" value="{{ post.id }}">
                 <button onclick="return confirm('Etes vous sûr de vouloir supprimer ce ticket ?');"
                         type="submit" class="btn btn-secondary">Supprimer</button>
               </form>
@@ -59,9 +58,8 @@
               <a href="{% url 'review_edit' post.id %}" class="btn btn-secondary">Modifier</a>
             </div>
             <div class="col-sm-auto">
-              <form action="{% url 'review_delete' %}" method="post">
+              <form action="{% url 'review_delete' post.id %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="post_id" value="{{ post.id }}">
                 <button onclick="return confirm('Etes vous sûr de vouloir supprimer cette critique ?');"
                         type="submit" class="btn btn-secondary">Supprimer</button>
               </form>
